@@ -5,13 +5,19 @@
 class Admin
 
 class Buyer {
-  -cpf
+  -buyer_cpf
+  -buyer_passport
+  -credit_card_holder
+  -credit_card_number
+  -credit_card_exp_date
+  -credit_card_ccid
 }
 
 class ChargeAttempt {
   status
   date
   failure: enum
+  'enum: code returned by cc operator
 }
 
 class ChargeOrder {
@@ -29,22 +35,13 @@ class ChargeOrder {
   -expire_date
 }
 
-note left of ChargeOrder
-  What is better: receipt as a Class or 
-  as a view of a succesful charge order?
+class Receipt {
+  - token
   - expire_date
   - payment_date
   - buyer
   - product name
   - value_after_discount
-  end note
-
-
-class CreditCard {
-  -number
-  -expiration_date
-  -ccid
-  -isValid?
 }
 
 class PaymentMethod {
@@ -68,6 +65,7 @@ class PaymentMethodConfig {
 }
 
 class Product {
+  -client_code
   -name
   -price 
   -set_at: date
@@ -107,8 +105,6 @@ User <- Admin
 User <-up- SellerEmployee
 SellerEmployee <- SellerAdmin
 
-
-Buyer *- CreditCard
 SellerCompany *- SellerEmployee
 SellerCompany *- Product
 SellerCompany - SellerToken
@@ -116,6 +112,7 @@ ChargeOrder -- SellerCompany
 ChargeOrder -- Product
 ChargeOrder - Buyer
 ChargeOrder -- ChargeAttempt
+ChargeAttempt -- Receipt
 (SellerCompany, PaymentMethod) .. PaymentMethodConfig
 
 @enduml
