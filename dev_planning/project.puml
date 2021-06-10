@@ -1,0 +1,147 @@
+' option + D to preview
+
+@startuml "PayNow"
+
+class Admin {
+  -email
+  -password
+  'can ask for sellerCo suspention, that has to be approved by another admin
+}
+
+class Buyer {
+  -token 
+  'generated on account creation
+  -buyer_cpf
+  -credit_card_holder
+  -credit_card_number
+  -credit_card_exp_date
+  -credit_card_ccid
+  'one token per person, regardless of how many 
+}
+
+class ChargeAttempt {
+  status
+  date
+  failure: enum
+  'enum: code returned by cc operator
+}
+
+class ChargeOrder {
+  -id: alfanum(20)
+  -payment_method: cc, boleto, pix
+  ' if CC, its details
+  ' else, boleto/pix data (is that the payment method token?)
+  -token company
+  -token product
+  -token client
+  -status
+  'status: pending (default), approved, rejected
+  -value_before_discount
+  -value_after_discount
+  -charge_due_date ?
+}
+
+class Receipt {
+  - token
+  - due_date
+  - payment_date
+  - authorization_code
+  'optional, according to me:
+  - buyer name
+  - produt name
+}
+
+class PaymentMethodOffer {
+  -type: credit_card, boleto, pix
+  -name
+  -icon
+  -fee: in %
+  -max_fee: brl
+  -status: in/active
+  -discount:
+  -set_at: date
+  -set_by: user
+}
+
+class PaymentMethodConfig {
+  -user_bank_code: pix, boleto
+  -user_pix_key: pix
+  -user_bank_branch: boleto
+  -user_bank_account: boleto
+  -user_account_before_card_operator: alfanum 20 char
+}
+
+class PaymentProcessor {
+  -token
+}
+
+class Product {
+  -token: alfanum 20 char
+  -name
+  -code
+  -discount_according_to_payment_method
+  -price 
+  -price_set_at: date
+  -price_set_by: user
+}
+
+class SellerCompany {
+  -email_server_allow_list
+  -cnpj
+  -formal_name: razão social
+  -name: nome fantasia
+  -billing_address
+  -billing_email
+  -access_status: cleared, pending, suspended
+  ' all fields above required for platform access
+}
+
+class SellerEmployee {
+  -email
+  -password
+  - role: admin, user
+  ' admin has access to list his company's users, can change status from pending to active to inactive
+  ' admin can request token replacement
+}
+
+class SellerToken {
+  -token: alfanum 20 char
+  -company_id
+  -created_at: date
+  -created_by: user
+  generate_new()
+}
+
+SellerEmployee -* SellerCompany
+SellerCompany *- Product
+SellerToken -- SellerCompany
+ChargeOrder -- SellerCompany
+ChargeOrder -- Product
+ChargeOrder - Buyer
+ChargeOrder -- ChargeAttempt
+ChargeAttempt -- Receipt
+PaymentMethodConfig .. (SellerCompany, PaymentMethodOffer)
+
+note as N1
+  API endpoints:
+  <b>create user token</b> 
+  - cpf
+  - seller token
+
+  <b>create charge order</b> 
+  - seller token
+  - single product token
+  - buyer token
+  - payment method
+  -- credit card details, or
+  -- boleto details, or
+  -- pix (no details)
+  - buyer data
+
+  <b>list charges</b> 
+  - filter by due date & payment method
+
+  <b>update charge status</b> 
+  - filter by due date & payment method
+end note
+@enduml
