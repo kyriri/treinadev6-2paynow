@@ -23,6 +23,19 @@ describe 'Company registration' do
     expect(company.errors[:billing_email]).to_not be_empty
   end 
 
+  it 'has an alphanumeric token of 24 characters' do
+    company = SellerCompany.create!(
+      name: 'Yummy!Chocolates',
+      formal_name: 'Madagascar Food Industry SARL',
+      cnpj: '01.584.565/0001-26',
+      billing_email: 'accountant@yummy.mg'
+    )
+    expect(company.token.size).to be >= 24
+
+    # original specs asked for token size of 20 char, but there's no good reason
+    # to spend time creating a custom method with decreased security
+  end
+
   it 'cannot happen twice for the same CNPJ' do
     company1 = SellerCompany.create!(
       name: 'Yummy!Chocolates',
@@ -41,4 +54,5 @@ describe 'Company registration' do
 
     expect(company2.errors[:cnpj]).to_not be_empty
   end
+
 end

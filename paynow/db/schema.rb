@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_11_034323) do
+ActiveRecord::Schema.define(version: 2021_06_11_045840) do
 
   create_table "seller_companies", force: :cascade do |t|
     t.string "name"
@@ -20,6 +20,8 @@ ActiveRecord::Schema.define(version: 2021_06_11_034323) do
     t.integer "access_status", default: 5, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "token", null: false
+    t.index ["token"], name: "index_seller_companies_on_token", unique: true
   end
 
 end
