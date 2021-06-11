@@ -44,7 +44,7 @@ describe 'Company' do
       )
       company2 = SellerCompany.new(
         name: 'Gelato Lovers',
-        formal_name: 'Frida Davvero do Brasil LTDA',
+        formal_name: 'Frida Trevisi di Leonardo LTDA',
         cnpj: '01.584.565/0001-26',
         billing_email: 'contabilidade@gelatolovers.com.br'
       )

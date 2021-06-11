@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_11_154737) do
+ActiveRecord::Schema.define(version: 2021_06_11_201719) do
 
   create_table "buyers", force: :cascade do |t|
     t.string "token"
@@ -26,6 +26,24 @@ ActiveRecord::Schema.define(version: 2021_06_11_154737) do
     t.integer "seller_company_id", null: false
     t.index ["buyer_id"], name: "index_buyers_seller_companies_on_buyer_id"
     t.index ["seller_company_id"], name: "index_buyers_seller_companies_on_seller_company_id"
+  end
+
+  create_table "charge_orders", force: :cascade do |t|
+    t.string "token", null: false
+    t.decimal "value_before_discount", null: false
+    t.decimal "value_after_discount"
+    t.date "due_date"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.integer "payment_method_option_id"
+    t.integer "seller_company_id"
+    t.integer "buyer_id"
+    t.integer "product_id"
+    t.index ["buyer_id"], name: "index_charge_orders_on_buyer_id"
+    t.index ["payment_method_option_id"], name: "index_charge_orders_on_payment_method_option_id"
+    t.index ["product_id"], name: "index_charge_orders_on_product_id"
+    t.index ["seller_company_id"], name: "index_charge_orders_on_seller_company_id"
+    t.index ["token"], name: "index_charge_orders_on_token", unique: true
   end
 
   create_table "payment_method_options", force: :cascade do |t|
@@ -61,5 +79,9 @@ ActiveRecord::Schema.define(version: 2021_06_11_154737) do
     t.index ["token"], name: "index_seller_companies_on_token", unique: true
   end
 
+  add_foreign_key "charge_orders", "buyers"
+  add_foreign_key "charge_orders", "payment_method_options"
+  add_foreign_key "charge_orders", "products"
+  add_foreign_key "charge_orders", "seller_companies"
   add_foreign_key "products", "seller_companies"
 end
