@@ -32,8 +32,7 @@ describe 'Company registration' do
     )
     expect(company.token.size).to be >= 24
 
-    # original specs asked for token size of 20 char, but there's no good reason
-    # to spend time creating a custom method with decreased security
+    # OBS default token (24 char) is stronger than requested (20 char) - since we create it for others to consume (we have the upper hand), there's no good reason to shorten it - but it can be reset later if needed
   end
 
   it 'cannot happen twice for the same CNPJ' do

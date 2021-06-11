@@ -1,5 +1,9 @@
 # README
 
+The command `$ rails notes -a OBS` lists simplifications of business rules done during development.
+
+
+--- 
 This README would normally document whatever steps are necessary to get the
 application up and running.
 
