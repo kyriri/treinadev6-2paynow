@@ -10,7 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_11_053320) do
+ActiveRecord::Schema.define(version: 2021_06_11_133648) do
+
+  create_table "buyers", force: :cascade do |t|
+    t.string "token"
+    t.string "cpf"
+    t.string "name"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["token"], name: "index_buyers_on_token", unique: true
+  end
 
   create_table "products", force: :cascade do |t|
     t.string "token", null: false
