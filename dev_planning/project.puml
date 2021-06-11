@@ -11,7 +11,8 @@ class Admin {
 class Buyer {
   -token 
   'generated on account creation
-  -buyer_cpf
+  -name
+  -cpf
   -credit_card_holder
   -credit_card_number
   -credit_card_exp_date
@@ -51,16 +52,13 @@ class Receipt {
   - produt name
 }
 
-class PaymentMethodOffer {
+class PaymentMethodOption {
   -type: credit_card, boleto, pix
   -name
   -icon
   -fee: in %
   -max_fee: brl
   -status: in/active
-  -discount:
-  -set_at: date
-  -set_by: user
 }
 
 class PaymentMethodConfig {
@@ -80,19 +78,21 @@ class Product {
   -name
   -code
   -discount_according_to_payment_method
+  -discount_set_at: date
+  -discount_set_by: user
   -price 
   -price_set_at: date
   -price_set_by: user
 }
 
 class SellerCompany {
-  -email_server_allow_list
+  -access_status: cleared, pending, suspended
   -cnpj
   -formal_name: razão social
   -name: nome fantasia
-  -billing_address
   -billing_email
-  -access_status: cleared, pending, suspended
+  -email_server_allow_list
+  -billing_address
   ' all fields above required for platform access
 }
 
@@ -104,23 +104,14 @@ class SellerEmployee {
   ' admin can request token replacement
 }
 
-class SellerToken {
-  -token: alfanum 20 char
-  -company_id
-  -created_at: date
-  -created_by: user
-  generate_new()
-}
-
 SellerEmployee -* SellerCompany
 SellerCompany *- Product
-SellerToken -- SellerCompany
 ChargeOrder -- SellerCompany
 ChargeOrder -- Product
 ChargeOrder - Buyer
 ChargeOrder -- ChargeAttempt
 ChargeAttempt -- Receipt
-PaymentMethodConfig .. (SellerCompany, PaymentMethodOffer)
+PaymentMethodConfig .. (SellerCompany, PaymentMethodOption)
 
 note as N1
   API endpoints:
