@@ -10,7 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_11_045840) do
+ActiveRecord::Schema.define(version: 2021_06_11_053320) do
+
+  create_table "products", force: :cascade do |t|
+    t.string "token", null: false
+    t.string "name"
+    t.decimal "price", precision: 7, scale: 2
+    t.integer "seller_company_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["seller_company_id"], name: "index_products_on_seller_company_id"
+    t.index ["token"], name: "index_products_on_token", unique: true
+  end
 
   create_table "seller_companies", force: :cascade do |t|
     t.string "name"
@@ -24,4 +35,5 @@ ActiveRecord::Schema.define(version: 2021_06_11_045840) do
     t.index ["token"], name: "index_seller_companies_on_token", unique: true
   end
 
+  add_foreign_key "products", "seller_companies"
 end
