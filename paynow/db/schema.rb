@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_11_133648) do
+ActiveRecord::Schema.define(version: 2021_06_11_145312) do
 
   create_table "buyers", force: :cascade do |t|
     t.string "token"
@@ -19,6 +19,13 @@ ActiveRecord::Schema.define(version: 2021_06_11_133648) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["token"], name: "index_buyers_on_token", unique: true
+  end
+
+  create_table "buyers_seller_companies", id: false, force: :cascade do |t|
+    t.integer "buyer_id", null: false
+    t.integer "seller_company_id", null: false
+    t.index ["buyer_id"], name: "index_buyers_seller_companies_on_buyer_id"
+    t.index ["seller_company_id"], name: "index_buyers_seller_companies_on_seller_company_id"
   end
 
   create_table "products", force: :cascade do |t|

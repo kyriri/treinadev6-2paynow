@@ -14,7 +14,16 @@ describe 'Buyer' do
     expect(buyer.errors[:name]).to_not be_empty
   end
 
-  it 'has to be associated with one seller company' do
+  it 'has to be associated with at least one seller company' do
+    # right now it just tests that it's possible to do `buyer.seller_companies`
+    # TODO make this association to happen automatically on a system level
+    company = SellerCompany.create!(name: 'Yummy!Chocolates', formal_name: 'Madagascar Food Industry SARL',
+                                    cnpj: '01.584.565/0001-26', billing_email: 'accountant@yummy.mg')
+    buyer = Buyer.create!(cpf: '428.091.154-19', name: 'Freddie Mercury')
+
+    buyer.seller_companies << company
+
+    expect(buyer.seller_companies[0].name).to eq('Yummy!Chocolates')
   end
 
   xit 'can be associated with multiple seller companies' do
