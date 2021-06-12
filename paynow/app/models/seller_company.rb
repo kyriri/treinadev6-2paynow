@@ -1,4 +1,7 @@
 class SellerCompany < ApplicationRecord
+  has_many :payment_routes
+  has_many :payment_method_options, through: :payment_routes
+
   has_and_belongs_to_many :buyers
   has_secure_token
 

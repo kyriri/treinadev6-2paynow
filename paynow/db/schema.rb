@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_11_201719) do
+ActiveRecord::Schema.define(version: 2021_06_12_012352) do
 
   create_table "buyers", force: :cascade do |t|
     t.string "token"
@@ -54,6 +54,22 @@ ActiveRecord::Schema.define(version: 2021_06_11_201719) do
     t.decimal "max_fee_in_brl", precision: 7, scale: 2, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "payment_routes", force: :cascade do |t|
+    t.integer "seller_company_id"
+    t.integer "payment_method_option_id"
+    t.string "token", null: false
+    t.integer "bank_code"
+    t.string "bank_branch"
+    t.string "bank_account"
+    t.string "pix_key"
+    t.string "token_before_card_operator"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["payment_method_option_id"], name: "index_payment_routes_on_payment_method_option_id"
+    t.index ["seller_company_id"], name: "index_payment_routes_on_seller_company_id"
+    t.index ["token"], name: "index_payment_routes_on_token", unique: true
   end
 
   create_table "products", force: :cascade do |t|

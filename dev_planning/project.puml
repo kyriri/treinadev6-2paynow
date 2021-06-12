@@ -61,7 +61,7 @@ class PaymentMethodOption {
   -status: in/active
 }
 
-class PaymentMethodConfig {
+class PaymentRoute {
   -user_bank_code: pix, boleto
   -user_pix_key: pix
   -user_bank_branch: boleto
@@ -111,7 +111,7 @@ ChargeOrder -- Product
 ChargeOrder - Buyer
 ChargeOrder -- ChargeAttempt
 ChargeAttempt -- Receipt
-PaymentMethodConfig .. (SellerCompany, PaymentMethodOption)
+PaymentRoute .. (SellerCompany, PaymentMethodOption)
 
 note as N1
   API endpoints:
