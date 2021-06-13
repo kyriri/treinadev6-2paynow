@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_12_012352) do
+ActiveRecord::Schema.define(version: 2021_06_12_223222) do
 
   create_table "buyers", force: :cascade do |t|
     t.string "token"
@@ -39,6 +39,7 @@ ActiveRecord::Schema.define(version: 2021_06_12_012352) do
     t.integer "seller_company_id"
     t.integer "buyer_id"
     t.integer "product_id"
+    t.string "buyer_email"
     t.index ["buyer_id"], name: "index_charge_orders_on_buyer_id"
     t.index ["payment_method_option_id"], name: "index_charge_orders_on_payment_method_option_id"
     t.index ["product_id"], name: "index_charge_orders_on_product_id"
