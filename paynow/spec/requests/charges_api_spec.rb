@@ -17,7 +17,7 @@ describe 'API receives request for creating a new charge' do
         client_token: buyer.token, 
         product_token: product.token,
         payment_type_token: payment_route.token,
-        due_date: 3.days.from_now,
+        due_date: 3.days.from_now, # '2099-11-30'
         buyer_email: 'f.mercury@coldmail.com',
       }
     }
