@@ -118,7 +118,7 @@ describe 'API receives request for creating a new charge' do
       company_token: company.token, client_token: buyer.token, product_token: product.token, payment_type_token: payment_route.token, due_date: 3.days.from_now }
     }
     expect(response).to have_http_status :precondition_failed # 412
-    expect(response.body).to include('Client email absent')
+    expect(response.body).to include('Costumer email absent')
   end
 
   it 'but the seller company doesn\'t own that product' do
@@ -159,4 +159,6 @@ describe 'API receives request for creating a new charge' do
 
   xit 'but the buyer is not a client of that company' do
   end
+  # TODO link buyer and companies
+  # TODO doc API
 end

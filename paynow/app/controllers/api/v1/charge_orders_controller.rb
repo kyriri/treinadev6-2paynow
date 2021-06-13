@@ -19,7 +19,7 @@ class Api::V1::ChargeOrdersController < ActionController::API
     when @payment_route.nil? || @payment_route.seller_company_id != @seller_company.id
       return render json: { error: 'Invalid payment_type token' }, status: 422
     when charge_params[:buyer_email].nil?
-      return render json: { error: 'Client email absent' }, status: 412
+      return render json: { error: 'Costumer email absent' }, status: 412
     when charge_params[:due_date].nil?
       return render json: { error: 'Payment due date absent' }, status: 412
     when Date.parse(charge_params[:due_date]) < Date.current
