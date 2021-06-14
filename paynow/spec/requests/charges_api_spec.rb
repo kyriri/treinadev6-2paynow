@@ -159,6 +159,4 @@ describe 'API receives request for creating a new charge' do
 
   xit 'but the buyer is not a client of that company' do
   end
-  # TODO link buyer and companies
-  # TODO doc API
 end

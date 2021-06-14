@@ -4,9 +4,46 @@ The command `$ rails notes -a OBS` lists simplifications of business rules done 
 
 ## API usage
 
+### Registering a costumer
+![POST](https://img.shields.io/badge/-POST-blue "POST") `/api/v1/buyers/`
+
+#### - Data Params
+```
+new_client: {
+        company_token: 'ReMbUPJUM1LRjAA7tVos6SXY',
+        full_name: 'Maria Salomea Skłodowska', 
+        cpf: '983.656.178-01',
+      }
+```
+
+#### - Success Response:
+![201: Created](https://img.shields.io/badge/Code:%20201-CREATED-green "201: Created")
+`{ "costumer_token": "hEdK2gqcCX8pPmA9yp5ura8j" } `
+
+#### - Error Response:
+![401: Unauthorized access](https://img.shields.io/badge/Code:%20401-UNAUTHORIZED%20ACCESS-red "401: Unauthorized access")
+Company token is expired, blocked, or absent from the database.
+` { "error": "Invalid company token" } `
+
+![412: Parameters missing](https://img.shields.io/badge/Code:%20412-PARAMS%20MISSING-red "412: Parameters missing")
+At least one mandatory parameter was absent. Check message for details. Example:
+``` 
+[
+  {
+    "field": "name",
+    "type": "blank", 
+    "message": "Name cannot be blank"
+  },{
+    "field": "cpf", 
+    "type": "blank",
+    "message": "Cpf cannot be blank"
+  }
+]
+```
+
+
 ### Creating a standalone charge order
-![POST](https://img.shields.io/badge/-POST-blue "POST")  
-`/api/v1/charge_orders/`
+![POST](https://img.shields.io/badge/-POST-blue "POST") `/api/v1/charge_orders/`
 
 #### - Data Params
 ```
@@ -22,23 +59,23 @@ The command `$ rails notes -a OBS` lists simplifications of business rules done 
 }
 ```
 (`due_date` follows the format YYYY-MM-DD)
-  
+
 #### - Success Response:
-![201: Created](https://img.shields.io/badge/Code:%20201-CREATED-green "201: Created")  
+![201: Created](https://img.shields.io/badge/Code:%20201-CREATED-green "201: Created")
 `{ "charge_order_token": "hEdK2gqcCX8pPmA9yp5ura8j" } `
-  
+
 #### - Error Response:
-![401: Unauthorized access](https://img.shields.io/badge/Code:%20401-UNAUTHORIZED%20ACCESS-red "401: Unauthorized access")  
-Token is expired, blocked, or absent from the database.  
+![401: Unauthorized access](https://img.shields.io/badge/Code:%20401-UNAUTHORIZED%20ACCESS-red "401: Unauthorized access")
+Company token is expired, blocked, or absent from the database.
 ` { "error": "Invalid company token" } `
-  
-![412: Parameters missing](https://img.shields.io/badge/Code:%20412-PARAMS%20MISSING-red "412: Parameters missing")  
-At least one mandatory parameter was absent. Check message for details. Example:  
+
+![412: Parameters missing](https://img.shields.io/badge/Code:%20412-PARAMS%20MISSING-red "412: Parameters missing")
+At least one mandatory parameter was absent. Check message for details. Example:
 ` { "error": "Costumer email absent" }`
-  
-![422: Wrongful parameters](https://img.shields.io/badge/Code:%20422-WRONGFUL%20PARAMS-red "422: Wrongful parameters")  
-At least one parameter was invalid. Check message for details. Example:  
-` { "error": "Payment due date cannot be in the past" } `
+
+![422: Wrongful parameters](https://img.shields.io/badge/Code:%20422-WRONGFUL%20PARAMS-red "422: Wrongful parameters")
+At least one parameter was invalid. Check message for details. Example:
+` { "error": "Invalid product token" } `
   
 --- 
 This README would normally document whatever steps are necessary to get the

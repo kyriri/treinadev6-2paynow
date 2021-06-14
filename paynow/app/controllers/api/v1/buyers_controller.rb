@@ -7,9 +7,9 @@ class Api::V1::BuyersController < ActionController::API
       return render json: { error: 'Invalid company token' }, status: 401
     end
 
-    @client = Buyer.create!(name: buyer_params[:full_name], cpf: buyer_params[:cpf])
-    @client.seller_companies << @seller_company
-    render json: { client_token: @client.token }, status: 201
+    @buyer = Buyer.create!(name: buyer_params[:full_name], cpf: buyer_params[:cpf])
+    @buyer.seller_companies << @seller_company
+    render json: { costumer_token: @buyer.token }, status: 201
   
   rescue ActiveRecord::RecordInvalid => trouble
     answer = trouble.record.errors.errors.each.with_object([]) { 
@@ -27,7 +27,7 @@ class Api::V1::BuyersController < ActionController::API
 
   def buyer_params
     params
-      .require(:new_client)
+      .require(:new_costumer)
       .permit(:company_token,
               :full_name, 
               :cpf, 
