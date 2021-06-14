@@ -17,15 +17,15 @@ new_client: {
 ```
 
 #### - Success Response:
-![201: Created](https://img.shields.io/badge/Code:%20201-CREATED-green "201: Created")
+![201: Created](https://img.shields.io/badge/Code:%20201-CREATED-green "201: Created")  
 `{ "costumer_token": "hEdK2gqcCX8pPmA9yp5ura8j" } `
 
 #### - Error Response:
-![401: Unauthorized access](https://img.shields.io/badge/Code:%20401-UNAUTHORIZED%20ACCESS-red "401: Unauthorized access")
-Company token is expired, blocked, or absent from the database.
+![401: Unauthorized access](https://img.shields.io/badge/Code:%20401-UNAUTHORIZED%20ACCESS-red "401: Unauthorized access")  
+Company token is expired, blocked, or absent from the database.  
 ` { "error": "Invalid company token" } `
 
-![412: Parameters missing](https://img.shields.io/badge/Code:%20412-PARAMS%20MISSING-red "412: Parameters missing")
+![412: Parameters missing](https://img.shields.io/badge/Code:%20412-PARAMS%20MISSING-red "412: Parameters missing")  
 At least one mandatory parameter was absent. Check message for details. Example:
 ``` 
 [
@@ -61,20 +61,20 @@ At least one mandatory parameter was absent. Check message for details. Example:
 (`due_date` follows the format YYYY-MM-DD)
 
 #### - Success Response:
-![201: Created](https://img.shields.io/badge/Code:%20201-CREATED-green "201: Created")
+![201: Created](https://img.shields.io/badge/Code:%20201-CREATED-green "201: Created")  
 `{ "charge_order_token": "hEdK2gqcCX8pPmA9yp5ura8j" } `
 
 #### - Error Response:
-![401: Unauthorized access](https://img.shields.io/badge/Code:%20401-UNAUTHORIZED%20ACCESS-red "401: Unauthorized access")
-Company token is expired, blocked, or absent from the database.
+![401: Unauthorized access](https://img.shields.io/badge/Code:%20401-UNAUTHORIZED%20ACCESS-red "401: Unauthorized access")  
+Company token is expired, blocked, or absent from the database.  
 ` { "error": "Invalid company token" } `
 
-![412: Parameters missing](https://img.shields.io/badge/Code:%20412-PARAMS%20MISSING-red "412: Parameters missing")
-At least one mandatory parameter was absent. Check message for details. Example:
+![412: Parameters missing](https://img.shields.io/badge/Code:%20412-PARAMS%20MISSING-red "412: Parameters missing")  
+At least one mandatory parameter was absent. Check message for details. Example:  
 ` { "error": "Costumer email absent" }`
 
-![422: Wrongful parameters](https://img.shields.io/badge/Code:%20422-WRONGFUL%20PARAMS-red "422: Wrongful parameters")
-At least one parameter was invalid. Check message for details. Example:
+![422: Wrongful parameters](https://img.shields.io/badge/Code:%20422-WRONGFUL%20PARAMS-red "422: Wrongful parameters")  
+At least one parameter was invalid. Check message for details. Example:  
 ` { "error": "Invalid product token" } `
   
 --- 

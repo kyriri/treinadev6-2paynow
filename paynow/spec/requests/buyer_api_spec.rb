@@ -29,8 +29,6 @@ describe 'API receives request for creating a new client' do
     }
     expect(response).to have_http_status :precondition_failed
     expect(response.body).to include('Cpf cannot be blank')
-    byebug
-
     expect(response.body).to include('Name cannot be blank')
   end
 
