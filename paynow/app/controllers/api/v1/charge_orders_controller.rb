@@ -7,14 +7,14 @@ class Api::V1::ChargeOrdersController < ActionController::API
       return render json: { error: 'Invalid company token' }, status: 401
     end
 
-    @buyer = Buyer.find_by(token: charge_params[:client_token])
-    @product = Product.find_by(token: charge_params[:product_token]) 
+    @buyer = Buyer.find_by(token: charge_params[:costumer_token])
+    @product = Product.where("seller_company_id = ?", @seller_company.id).find_by(token: charge_params[:product_token])
     @payment_route = PaymentRoute.find_by(token: charge_params[:payment_type_token])
 
     case true
-    when @buyer.nil?
-      return render json: { error: 'Invalid client token' }, status: 422
-    when @product.nil? || @product.seller_company.id != @seller_company.id
+    when @buyer.nil? || @buyer.seller_companies.exclude?(@seller_company)
+      return render json: { error: 'Invalid costumer token' }, status: 422
+    when @product.nil? 
       return render json: { error: 'Invalid product token' }, status: 422
     when @payment_route.nil? || @payment_route.seller_company_id != @seller_company.id
       return render json: { error: 'Invalid payment_type token' }, status: 422
@@ -44,7 +44,7 @@ class Api::V1::ChargeOrdersController < ActionController::API
     params
       .require(:charge_order)
       .permit(:company_token, 
-              :client_token, 
+              :costumer_token, 
               :product_token,
               :due_date,
               :payment_type_token, 

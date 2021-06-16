@@ -3,7 +3,6 @@ require 'rails_helper'
 describe 'API receives request for creating a new client' do
   it 'and it\'s succesful' do
     company = SellerCompany.create!(name: 'Gelato Lovers', formal_name: 'Frida Trevisi di Leonardo LTDA', cnpj: '01.584.565/0001-26', billing_email: 'contabilidade@gelatolovers.com.br')
-    another_company = SellerCompany.create!(name: 'Northern De-Lights', formal_name: 'Bergman & Bergman Services SARL', cnpj: '84.613.860/0001-90', billing_email: 'ingmar.bergman@northern_delights.com')
 
     post '/api/v1/buyers/', params: {
       new_costumer: {

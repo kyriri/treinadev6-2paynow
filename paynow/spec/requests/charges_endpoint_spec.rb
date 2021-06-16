@@ -5,6 +5,7 @@ describe 'API receives request for creating a new charge' do
     buyer = Buyer.create!(name: 'Freddie Mercury', cpf: '428.091.154-19')
     company = SellerCompany.create!(name: 'Gelato Lovers', formal_name: 'Frida Trevisi di Leonardo LTDA',
                                     cnpj: '01.584.565/0001-26', billing_email: 'contabilidade@gelatolovers.com.br')
+    buyer.seller_companies << company
     product = Product.create!(name: 'Pistacchio ice-cream', price: 15, seller_company_id: company.id)
     payment_method = PaymentMethodOption.create!(category: 1, provider: 'Bank of Duckburg',
                                                 fee_as_percentage: 5, max_fee_in_brl: 1000)
@@ -14,7 +15,7 @@ describe 'API receives request for creating a new charge' do
     post '/api/v1/charge_orders/', params: {
       charge_order: {
         company_token: company.token,
-        client_token: buyer.token, 
+        costumer_token: buyer.token, 
         product_token: product.token,
         payment_type_token: payment_route.token,
         due_date: 3.days.from_now, # '2099-11-30'
@@ -41,22 +42,23 @@ describe 'API receives request for creating a new charge' do
     payment_route = PaymentRoute.create!(seller_company_id: company.id, payment_method_option_id: payment_method.id)
 
     post '/api/v1/charge_orders/', params: { charge_order: { 
-      client_token: '', 
+      costumer_token: '', 
       company_token: company.token, product_token: product.token, payment_type_token: payment_route.token, due_date: 3.days.from_now, buyer_email: 'f.mercury@coldmail.com' }
     }
     expect(response).to have_http_status :unprocessable_entity # 422
-    expect(response.body).to include('Invalid client token')
+    expect(response.body).to include('Invalid costumer token')
   end
 
   it 'but product token is missing' do
     buyer = Buyer.create!(name: 'Freddie Mercury', cpf: '428.091.154-19')
     company = SellerCompany.create!(name: 'Gelato Lovers', formal_name: 'Frida Trevisi di Leonardo LTDA', cnpj: '01.584.565/0001-26', billing_email: 'contabilidade@gelatolovers.com.br')
+    buyer.seller_companies << company
     payment_method = PaymentMethodOption.create!(category: 1, provider: 'Bank of Duckburg', fee_as_percentage: 5, max_fee_in_brl: 1000)
     payment_route = PaymentRoute.create!(seller_company_id: company.id, payment_method_option_id: payment_method.id)
 
     post '/api/v1/charge_orders/', params: { charge_order: { 
       product_token: '', 
-      company_token: company.token, client_token: buyer.token, payment_type_token: payment_route.token, due_date: 3.days.from_now, buyer_email: 'f.mercury@coldmail.com' }
+      company_token: company.token, costumer_token: buyer.token, payment_type_token: payment_route.token, due_date: 3.days.from_now, buyer_email: 'f.mercury@coldmail.com' }
     }
     expect(response).to have_http_status :unprocessable_entity # 422
     expect(response.body).to include('Invalid product token')
@@ -65,11 +67,12 @@ describe 'API receives request for creating a new charge' do
   it 'but payment_route token is missing' do
     buyer = Buyer.create!(name: 'Freddie Mercury', cpf: '428.091.154-19')
     company = SellerCompany.create!(name: 'Gelato Lovers', formal_name: 'Frida Trevisi di Leonardo LTDA', cnpj: '01.584.565/0001-26', billing_email: 'contabilidade@gelatolovers.com.br')
+    buyer.seller_companies << company
     product = Product.create!(name: 'Pistacchio ice-cream', price: 15, seller_company_id: company.id)
 
     post '/api/v1/charge_orders/', params: { charge_order: { 
       payment_type_token: '', 
-      company_token: company.token, client_token: buyer.token, product_token: product.token, due_date: 3.days.from_now, buyer_email: 'f.mercury@coldmail.com' }
+      company_token: company.token, costumer_token: buyer.token, product_token: product.token, due_date: 3.days.from_now, buyer_email: 'f.mercury@coldmail.com' }
     }
     expect(response).to have_http_status :unprocessable_entity # 422
     expect(response.body).to include('Invalid payment_type token')
@@ -78,13 +81,14 @@ describe 'API receives request for creating a new charge' do
   it 'but no due date was provided' do
     buyer = Buyer.create!(name: 'Freddie Mercury', cpf: '428.091.154-19')
     company = SellerCompany.create!(name: 'Gelato Lovers', formal_name: 'Frida Trevisi di Leonardo LTDA', cnpj: '01.584.565/0001-26', billing_email: 'contabilidade@gelatolovers.com.br')
+    buyer.seller_companies << company
     product = Product.create!(name: 'Pistacchio ice-cream', price: 15, seller_company_id: company.id)
     payment_method = PaymentMethodOption.create!(category: 1, provider: 'Bank of Duckburg', fee_as_percentage: 5, max_fee_in_brl: 1000)
     payment_route = PaymentRoute.create!(seller_company_id: company.id, payment_method_option_id: payment_method.id)
 
     post '/api/v1/charge_orders/', params: { charge_order: { 
       due_date: nil, 
-      company_token: company.token, client_token: buyer.token, product_token: product.token, payment_type_token: payment_route.token, buyer_email: 'f.mercury@coldmail.com' }
+      company_token: company.token, costumer_token: buyer.token, product_token: product.token, payment_type_token: payment_route.token, buyer_email: 'f.mercury@coldmail.com' }
     }
     expect(response).to have_http_status :precondition_failed # 412
     expect(response.body).to include('Payment due date absent')
@@ -93,13 +97,14 @@ describe 'API receives request for creating a new charge' do
   it 'but the provided due date is in the past' do
     buyer = Buyer.create!(name: 'Freddie Mercury', cpf: '428.091.154-19')
     company = SellerCompany.create!(name: 'Gelato Lovers', formal_name: 'Frida Trevisi di Leonardo LTDA', cnpj: '01.584.565/0001-26', billing_email: 'contabilidade@gelatolovers.com.br')
+    buyer.seller_companies << company
     product = Product.create!(name: 'Pistacchio ice-cream', price: 15, seller_company_id: company.id)
     payment_method = PaymentMethodOption.create!(category: 1, provider: 'Bank of Duckburg', fee_as_percentage: 5, max_fee_in_brl: 1000)
     payment_route = PaymentRoute.create!(seller_company_id: company.id, payment_method_option_id: payment_method.id)
 
     post '/api/v1/charge_orders/', params: { charge_order: { 
       due_date: 1.day.ago, 
-      company_token: company.token, client_token: buyer.token, product_token: product.token, payment_type_token: payment_route.token, buyer_email: 'f.mercury@coldmail.com' }
+      company_token: company.token, costumer_token: buyer.token, product_token: product.token, payment_type_token: payment_route.token, buyer_email: 'f.mercury@coldmail.com' }
     }
     expect(response).to have_http_status :unprocessable_entity # 422
     expect(response.body).to include('Payment due date cannot be in the past')
@@ -109,13 +114,14 @@ describe 'API receives request for creating a new charge' do
   it 'but no buyer email was provided' do
     buyer = Buyer.create!(name: 'Freddie Mercury', cpf: '428.091.154-19')
     company = SellerCompany.create!(name: 'Gelato Lovers', formal_name: 'Frida Trevisi di Leonardo LTDA', cnpj: '01.584.565/0001-26', billing_email: 'contabilidade@gelatolovers.com.br')
+    buyer.seller_companies << company
     product = Product.create!(name: 'Pistacchio ice-cream', price: 15, seller_company_id: company.id)
     payment_method = PaymentMethodOption.create!(category: 1, provider: 'Bank of Duckburg', fee_as_percentage: 5, max_fee_in_brl: 1000)
     payment_route = PaymentRoute.create!(seller_company_id: company.id, payment_method_option_id: payment_method.id)
 
     post '/api/v1/charge_orders/', params: { charge_order: { 
       buyer_email: nil,
-      company_token: company.token, client_token: buyer.token, product_token: product.token, payment_type_token: payment_route.token, due_date: 3.days.from_now }
+      company_token: company.token, costumer_token: buyer.token, product_token: product.token, payment_type_token: payment_route.token, due_date: 3.days.from_now }
     }
     expect(response).to have_http_status :precondition_failed # 412
     expect(response.body).to include('Costumer email absent')
@@ -124,6 +130,7 @@ describe 'API receives request for creating a new charge' do
   it 'but the seller company doesn\'t own that product' do
     buyer = Buyer.create!(name: 'Freddie Mercury', cpf: '428.091.154-19')
     company = SellerCompany.create!(name: 'Gelato Lovers', formal_name: 'Frida Trevisi di Leonardo LTDA', cnpj: '01.584.565/0001-26', billing_email: 'contabilidade@gelatolovers.com.br')
+    buyer.seller_companies << company
     product = Product.create!(name: 'Pistacchio ice-cream', price: 15, seller_company_id: company.id)
     payment_method = PaymentMethodOption.create!(category: 1, provider: 'Bank of Duckburg', fee_as_percentage: 5, max_fee_in_brl: 1000)
     payment_route = PaymentRoute.create!(seller_company_id: company.id, payment_method_option_id: payment_method.id)
@@ -133,7 +140,7 @@ describe 'API receives request for creating a new charge' do
 
     post '/api/v1/charge_orders/', params: { charge_order: { 
       product_token: product_from_another_company.token, 
-      company_token: company.token, client_token: buyer.token, payment_type_token: payment_route.token, due_date: 3.days.from_now, buyer_email: 'svalbard_bear@coldmail.com' }
+      company_token: company.token, costumer_token: buyer.token, payment_type_token: payment_route.token, due_date: 3.days.from_now, buyer_email: 'svalbard_bear@coldmail.com' }
     }
     expect(response).to have_http_status :unprocessable_entity # 422
     expect(response.body).to include('Invalid product token')
@@ -142,6 +149,7 @@ describe 'API receives request for creating a new charge' do
   it 'but the payment route provided is associated with another company' do
     buyer = Buyer.create!(name: 'Freddie Mercury', cpf: '428.091.154-19')
     company = SellerCompany.create!(name: 'Gelato Lovers', formal_name: 'Frida Trevisi di Leonardo LTDA', cnpj: '01.584.565/0001-26', billing_email: 'contabilidade@gelatolovers.com.br')
+    buyer.seller_companies << company
     product = Product.create!(name: 'Pistacchio ice-cream', price: 15, seller_company_id: company.id)
     payment_method = PaymentMethodOption.create!(category: 1, provider: 'Bank of Duckburg', fee_as_percentage: 5, max_fee_in_brl: 1000)
     payment_route = PaymentRoute.create!(seller_company_id: company.id, payment_method_option_id: payment_method.id)
@@ -151,12 +159,29 @@ describe 'API receives request for creating a new charge' do
 
     post '/api/v1/charge_orders/', params: { charge_order: { 
       payment_type_token: payment_route_associated_with_another_company.token,
-      company_token: company.token, client_token: buyer.token, product_token: product.token, due_date: 3.days.from_now, buyer_email: 'svalbard_bear@coldmail.com' }
+      company_token: company.token, costumer_token: buyer.token, product_token: product.token, due_date: 3.days.from_now, buyer_email: 'svalbard_bear@coldmail.com' }
     }
     expect(response).to have_http_status :unprocessable_entity # 422
     expect(response.body).to include('Invalid payment_type token')
   end
 
-  xit 'but the buyer is not a client of that company' do
+  it 'but the buyer is not a client of that company' do
+    another_company = SellerCompany.create!(name: 'Northern De-Lights', formal_name: 'Bergman & Bergman Services SARL', cnpj: '84.613.860/0001-90', billing_email: 'ingmar.bergman@northern_delights.com')
+    buyer_registered_on_another_company = Buyer.create!(name: 'Freddie Mercury', cpf: '428.091.154-19')
+    buyer_registered_on_another_company.seller_companies << another_company 
+    company = SellerCompany.create!(name: 'Gelato Lovers', formal_name: 'Frida Trevisi di Leonardo LTDA', cnpj: '01.584.565/0001-26', billing_email: 'contabilidade@gelatolovers.com.br')
+    product = Product.create!(name: 'Pistacchio ice-cream', price: 15, seller_company_id: company.id)
+    payment_method = PaymentMethodOption.create!(category: 1, provider: 'Bank of Duckburg', fee_as_percentage: 5, max_fee_in_brl: 1000)
+    payment_route = PaymentRoute.create!(seller_company_id: company.id, payment_method_option_id: payment_method.id)
+
+    post '/api/v1/charge_orders/', params: { charge_order: { 
+      costumer_token: buyer_registered_on_another_company.token, 
+      company_token: company.token, product_token: product.token, payment_type_token: payment_route.token, due_date: 3.days.from_now, buyer_email: 'svalbard_bear@coldmail.com' }
+    }
+    expect(response).to have_http_status :unprocessable_entity
+    expect(response.body).to include('Invalid costumer token')
   end
+
+  # TODO develop error hash object with: attribute, type, msg (on the models of the create buyer endpoint)
+  # TODO give response with many errors at once, instead of a single failure
 end
