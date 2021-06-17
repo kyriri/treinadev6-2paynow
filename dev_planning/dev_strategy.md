@@ -17,6 +17,9 @@ Which info should be passed on the request?
 What do I need to process the above?
 - company registration
 - product list
-- client registration
+- buyer registration
 - offer of payment methods
 - config of payment method by seller
+
+## Second Priority
+After being able to create orders of charge, it's natural our client can obtain a list of them.
