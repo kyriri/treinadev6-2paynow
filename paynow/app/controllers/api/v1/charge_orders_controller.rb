@@ -4,11 +4,15 @@ class Api::V1::ChargeOrdersController < ActionController::API
   def index
     @charge_orders = ChargeOrder.where('seller_company_id = ?', @seller_company.id)
 
-    # if charge_params[:filter_start_date] and charge_params[:filter_end_date]
-    #   @charge_orders = @charge_orders.where('due_date >= ?', charge_params[:filter_start_date])
-    #   @charge_orders = @charge_orders.where('due_date <= ?', charge_params[:filter_end_date])
-    # else
-    # end
+    if charge_params[:payment_type_token]
+      @payment_route = PaymentRoute.find_by(token: charge_params[:payment_type_token])
+      @charge_orders = @charge_orders.where('payment_route_id = ?', @payment_route.id)
+    end
+
+    if charge_params[:filter_start_date] and charge_params[:filter_end_date]
+      @charge_orders = @charge_orders.where('due_date >= ?', charge_params[:filter_start_date])
+      @charge_orders = @charge_orders.where('due_date <= ?', charge_params[:filter_end_date])
+    end
 
     render json: @charge_orders.as_json(except: :id), status: 200
   end
@@ -38,7 +42,7 @@ class Api::V1::ChargeOrdersController < ActionController::API
     @new_charge_order = ChargeOrder
       .create(due_date: charge_params[:due_date],
               value_before_discount: @product.price,
-              payment_method_option_id: @payment_route.payment_method_option_id,
+              payment_route_id: @payment_route.id,
               seller_company_id: @seller_company.id, 
               buyer_id: @buyer.id, 
               product_id: @product.id,

@@ -215,32 +215,56 @@ describe 'API receives request for' do
 
     end
 
-    xit 'filtered by window of payment deadline' do
+    it 'filtered by due date span' do
       company = SellerCompany.create!(name: 'Gelato Lovers', formal_name: 'Frida Trevisi di Leonardo LTDA', cnpj: '01.584.565/0001-26', billing_email: 'contabilidade@gelatolovers.com.br')
       buyer = Buyer.create!(name: 'Freddie Mercury', cpf: '428.091.154-19')
       product = Product.create!(name: 'Pistacchio ice-cream', price: 15, seller_company_id: company.id)
       payment_method = PaymentMethodOption.create!(category: 1, provider: 'Bank of Duckburg', fee_as_percentage: 5, max_fee_in_brl: 1000)
       payment_route = PaymentRoute.create!(seller_company_id: company.id, payment_method_option_id: payment_method.id)
-      first_charge_order = ChargeOrder.create!(due_date: 2.months.ago, value_before_discount: product.price, payment_method_option_id: payment_route.payment_method_option_id, seller_company_id: company.id, buyer_id: buyer.id, product_id: product.id, buyer_email: 'freddy@privacyphoenix.com')
+      first_charge_order = ChargeOrder.create!(due_date: 1.month.ago, value_before_discount: product.price, payment_method_option_id: payment_route.payment_method_option_id, seller_company_id: company.id, buyer_id: buyer.id, product_id: product.id, buyer_email: 'freddy@privacyphoenix.com')
       second_charge_order = ChargeOrder.create!(due_date: 3.days.from_now, value_before_discount: product.price, payment_method_option_id: payment_route.payment_method_option_id, seller_company_id: company.id, buyer_id: buyer.id, product_id: product.id, buyer_email: 'we_like_change@6mail.com')
 
       get '/api/v1/charge_orders/', params: {
         charge_order: {
           company_token: company.token,
           payment_type_token: '',
-          filter_start_date: 1.month.ago,
-          filter_end_date: Date.current,
+          filter_start_date: 2.months.ago,
+          filter_end_date: Date.current, # ex: '2021-06-28'
         }
       }
       expect(response).to have_http_status :ok # 200
       expect(response.content_type).to include('application/json')
       expect(JSON.parse(response.body).size).to eq(1)
       expect(JSON.parse(response.body).first['id']).to_not be
-      expect(response.body).to_not include(first_charge_order.token)
-      expect(response.body).to include(second_charge_order.token)
+      expect(response.body).to include(first_charge_order.token)
+      expect(response.body).to_not include(second_charge_order.token)
     end
 
-    xit 'filtered by payment type' do
+    it 'filtered by payment type' do
+      company = SellerCompany.create!(name: 'Gelato Lovers', formal_name: 'Frida Trevisi di Leonardo LTDA', cnpj: '01.584.565/0001-26', billing_email: 'contabilidade@gelatolovers.com.br')
+      buyer = Buyer.create!(name: 'Freddie Mercury', cpf: '428.091.154-19')
+      product = Product.create!(name: 'Pistacchio ice-cream', price: 15, seller_company_id: company.id)
+      payment_method_1 = PaymentMethodOption.create!(category: 1, provider: 'Bank of Duckburg', fee_as_percentage: 5, max_fee_in_brl: 1000)
+      payment_route_1 = PaymentRoute.create!(seller_company_id: company.id, payment_method_option_id: payment_method_1.id)
+      payment_method_2 = PaymentMethodOption.create!(category: 1, provider: 'PayFriend', fee_as_percentage: 4, max_fee_in_brl: 500)
+      payment_route_2 = PaymentRoute.create!(seller_company_id: company.id, payment_method_option_id: payment_method_2.id)
+      charge_order_1 = ChargeOrder.create!(due_date: 1.month.ago, value_before_discount: product.price, payment_method_option_id: payment_route_1.payment_method_option_id, seller_company_id: company.id, buyer_id: buyer.id, product_id: product.id, buyer_email: 'freddy@privacyphoenix.com')
+      charge_order_2 = ChargeOrder.create!(due_date: 1.month.ago, value_before_discount: product.price, payment_method_option_id: payment_route_2.payment_method_option_id, seller_company_id: company.id, buyer_id: buyer.id, product_id: product.id, buyer_email: 'we_like_change@6mail.com')
+
+      get '/api/v1/charge_orders/', params: {
+        charge_order: {
+          company_token: company.token,
+          payment_type_token: payment_route_1.token,
+          filter_start_date: '',
+          filter_end_date: '',
+        }
+      }
+      expect(response).to have_http_status :ok # 200
+      expect(response.content_type).to include('application/json')
+      expect(JSON.parse(response.body).size).to eq(1)
+      expect(JSON.parse(response.body).first['id']).to_not be
+      expect(response.body).to include(charge_order_1.token)
+      expect(response.body).to_not include(charge_order_2.token)
     end
 
     it 'but company token is invalid' do

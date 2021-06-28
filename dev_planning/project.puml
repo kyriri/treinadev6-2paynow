@@ -29,7 +29,7 @@ class ChargeAttempt {
 
 class ChargeOrder {
   -id: alfanum(20)
-  -payment_method: cc, boleto, pix
+  -token payment_route
   ' if CC, its details
   ' else, boleto/pix data (is that the payment method token?)
   -token company
